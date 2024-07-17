@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>sverchok.utils.relax_mesh API documentation</title>
+<title>sverchok.utils.mesh.separate_loose_mesh API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -22,7 +22,7 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>sverchok.utils.relax_mesh</code></h1>
+<h1 class="title">Module <code>sverchok.utils.mesh.separate_loose_mesh</code></h1>
 </header>
 <section id="section-intro">
 </section>
@@ -33,35 +33,18 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="sverchok.utils.relax_mesh.edges_relax"><code class="name flex">
-<span>def <span class="ident">edges_relax</span></span>(<span>vertices, edges, faces, iterations, k, mask=None, method='NONE', target='MEAN', skip_boundary=True, use_axes={0, 1, 2})</span>
+<dt id="sverchok.utils.mesh.separate_loose_mesh.separate_loose_mesh"><code class="name flex">
+<span>def <span class="ident">separate_loose_mesh</span></span>(<span>verts_in, poly_edge_in)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>supported shape preservation methods: NONE, NORMAL, BVH</p></div>
-</dd>
-<dt id="sverchok.utils.relax_mesh.faces_relax"><code class="name flex">
-<span>def <span class="ident">faces_relax</span></span>(<span>vertices, edges, faces, iterations, k, mask=None, method='NONE', target='MEAN', skip_boundary=True, use_axes={0, 1, 2})</span>
-</code></dt>
-<dd>
-<div class="desc"><p>supported shape preservation methods: NONE, NORMAL, BVH</p></div>
-</dd>
-<dt id="sverchok.utils.relax_mesh.lloyd_relax"><code class="name flex">
-<span>def <span class="ident">lloyd_relax</span></span>(<span>vertices, faces, iterations, mask=None, method='NORMAL', skip_boundary=True, use_axes={0, 1, 2})</span>
-</code></dt>
-<dd>
-<div class="desc"><p>supported shape preservation methods: NONE, NORMAL, LINEAR, BVH</p></div>
-</dd>
-<dt id="sverchok.utils.relax_mesh.map_mask_axes"><code class="name flex">
-<span>def <span class="ident">map_mask_axes</span></span>(<span>src_verts, dst_verts, axes)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="sverchok.utils.relax_mesh.mask_axes"><code class="name flex">
-<span>def <span class="ident">mask_axes</span></span>(<span>src_vert, dst_vert, axes)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
+<div class="desc"><p>separate a mesh by loose parts.
+input:
+1. list of verts
+2. list of edges/polygons
+output: list of
+1. separated list of verts
+2. separated list of edges/polygons with new indices of separated elements
+3. separated list of edges/polygons (like 2) with old indices</p></div>
 </dd>
 </dl>
 </section>
@@ -75,16 +58,12 @@ hljs.highlightAll();
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="sverchok.utils" href="index.html">sverchok.utils</a></code></li>
+<li><code><a title="sverchok.utils.mesh" href="index.html">sverchok.utils.mesh</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="sverchok.utils.relax_mesh.edges_relax" href="#sverchok.utils.relax_mesh.edges_relax">edges_relax</a></code></li>
-<li><code><a title="sverchok.utils.relax_mesh.faces_relax" href="#sverchok.utils.relax_mesh.faces_relax">faces_relax</a></code></li>
-<li><code><a title="sverchok.utils.relax_mesh.lloyd_relax" href="#sverchok.utils.relax_mesh.lloyd_relax">lloyd_relax</a></code></li>
-<li><code><a title="sverchok.utils.relax_mesh.map_mask_axes" href="#sverchok.utils.relax_mesh.map_mask_axes">map_mask_axes</a></code></li>
-<li><code><a title="sverchok.utils.relax_mesh.mask_axes" href="#sverchok.utils.relax_mesh.mask_axes">mask_axes</a></code></li>
+<li><code><a title="sverchok.utils.mesh.separate_loose_mesh.separate_loose_mesh" href="#sverchok.utils.mesh.separate_loose_mesh.separate_loose_mesh">separate_loose_mesh</a></code></li>
 </ul>
 </li>
 </ul>
