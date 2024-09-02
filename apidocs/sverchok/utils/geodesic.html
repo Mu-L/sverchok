@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>sverchok.utils.surface.gordon API documentation</title>
+<title>sverchok.utils.geodesic API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -22,7 +22,7 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>sverchok.utils.surface.gordon</code></h1>
+<h1 class="title">Module <code>sverchok.utils.geodesic</code></h1>
 </header>
 <section id="section-intro">
 </section>
@@ -33,29 +33,26 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="sverchok.utils.surface.gordon.gordon_surface"><code class="name flex">
-<span>def <span class="ident">gordon_surface</span></span>(<span>u_curves, v_curves, intersections, metric='POINTS', u_knots=None, v_knots=None, knotvector_accuracy=6, reparametrize_tolerance=0.01, logger=None)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Generate a NURBS surface from a net of NURBS curves, by use of Gordon's algorithm.</p>
-<p>:param u_curves - list of NURBS curves along U direction (length N)
-:param v_curves - list of NURBS curves along V direction (length M)
-:param intersections - np.array of shape (N, M, 3): points of curves intersection
-:param metric - metric function that can be used to calculate T values of curves
-intersections from their positions.
-:param u_knots - np.array, T values of curves intersection for each curve from u_curves
-:param v_knots - np.array, T values of curves intersection for each curve from v_curves</p>
-<p>return value: a NURBS surface.</p>
-<p>See also: The NURBS Book, 2nd ed., p.10.5.</p></div>
-</dd>
-<dt id="sverchok.utils.surface.gordon.nurbs_blend_surfaces"><code class="name flex">
-<span>def <span class="ident">nurbs_blend_surfaces</span></span>(<span>surface1, surface2, curve1, curve2, bulge1, bulge2, u_degree, u_samples, absolute_bulge=True, tangency='G1', ortho_mode='UV', logger=None)</span>
+<dt id="sverchok.utils.geodesic.cubic_spline"><code class="name flex">
+<span>def <span class="ident">cubic_spline</span></span>(<span>surface, uv_pts)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="sverchok.utils.surface.gordon.reparametrize_by_segments"><code class="name flex">
-<span>def <span class="ident">reparametrize_by_segments</span></span>(<span>curve, t_values, tolerance=0.01)</span>
+<dt id="sverchok.utils.geodesic.geodesic_cauchy_problem"><code class="name flex">
+<span>def <span class="ident">geodesic_cauchy_problem</span></span>(<span>surface, uv_starts, phis, target_radius, n_steps=10, closed_u=False, closed_v=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="sverchok.utils.geodesic.geodesic_curve_by_two_points"><code class="name flex">
+<span>def <span class="ident">geodesic_curve_by_two_points</span></span>(<span>surface, point1, point2, n_points, iterations, step, tolerance=0.001, logger=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="sverchok.utils.geodesic.make_rbf"><code class="name flex">
+<span>def <span class="ident">make_rbf</span></span>(<span>orig_points, tgt_points)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -72,14 +69,15 @@ intersections from their positions.
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="sverchok.utils.surface" href="index.html">sverchok.utils.surface</a></code></li>
+<li><code><a title="sverchok.utils" href="index.html">sverchok.utils</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="sverchok.utils.surface.gordon.gordon_surface" href="#sverchok.utils.surface.gordon.gordon_surface">gordon_surface</a></code></li>
-<li><code><a title="sverchok.utils.surface.gordon.nurbs_blend_surfaces" href="#sverchok.utils.surface.gordon.nurbs_blend_surfaces">nurbs_blend_surfaces</a></code></li>
-<li><code><a title="sverchok.utils.surface.gordon.reparametrize_by_segments" href="#sverchok.utils.surface.gordon.reparametrize_by_segments">reparametrize_by_segments</a></code></li>
+<li><code><a title="sverchok.utils.geodesic.cubic_spline" href="#sverchok.utils.geodesic.cubic_spline">cubic_spline</a></code></li>
+<li><code><a title="sverchok.utils.geodesic.geodesic_cauchy_problem" href="#sverchok.utils.geodesic.geodesic_cauchy_problem">geodesic_cauchy_problem</a></code></li>
+<li><code><a title="sverchok.utils.geodesic.geodesic_curve_by_two_points" href="#sverchok.utils.geodesic.geodesic_curve_by_two_points">geodesic_curve_by_two_points</a></code></li>
+<li><code><a title="sverchok.utils.geodesic.make_rbf" href="#sverchok.utils.geodesic.make_rbf">make_rbf</a></code></li>
 </ul>
 </li>
 </ul>

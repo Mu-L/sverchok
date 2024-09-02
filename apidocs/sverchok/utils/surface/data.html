@@ -60,6 +60,7 @@ and calculates any curvature information from them.</p></div>
         self.nuu = self.nvv = self.nuv = None
         self.points = None
         self.normals = None
+        self._derivatives_data = None
 
     def set(self, points, normals, fu, fv, duu, dvv, duv, nuu, nvv, nuv):
         &#34;&#34;&#34;Set derivatives information&#34;&#34;&#34;
@@ -74,6 +75,14 @@ and calculates any curvature information from them.</p></div>
         self.nvv = nvv # (fvv, normal), a.k.a n
         self.nuv = nuv # (fuv, normal), a.k.a m
 
+    @property
+    def derivatives_data(self):
+        if self._derivatives_data is None:
+            if self.points is None or self.fu is None or self.fv is None:
+                raise Exception(&#34;SurfaceCurvatureCalculator.set() was not called before call to SurfaceCurvatureCalculator.derivatives_data&#34;)
+            self._derivatives_data = SurfaceDerivativesData(self.points, self.fu, self.fv)
+        return self._derivatives_data
+
     def mean(self):
         &#34;&#34;&#34;
         Calculate mean curvature.
@@ -83,9 +92,13 @@ and calculates any curvature information from them.</p></div>
         calculating k1 and k2 first.
         &#34;&#34;&#34;
         duu, dvv, duv, nuu, nvv, nuv = self.duu, self.dvv, self.duv, self.nuu, self.nvv, self.nuv
-        A = duu*dvv - duv*duv
-        B = duu*nvv - 2*duv*nuv + dvv*nuu
-        return B / (2*A)
+        numerator = duu*nvv - 2*duv*nuv + dvv*nuu
+        denominator = 2*(duu*dvv - duv*duv)
+
+        curvature = np.zeros_like(numerator)
+        good = (denominator != 0)
+        curvature[good] = numerator[good] / denominator[good]
+        return curvature
 
     def gauss(self):
         &#34;&#34;&#34;
@@ -98,7 +111,10 @@ and calculates any curvature information from them.</p></div>
         duu, dvv, duv, nuu, nvv, nuv = self.duu, self.dvv, self.duv, self.nuu, self.nvv, self.nuv
         numerator = nuu * nvv - nuv*nuv
         denominator = duu * dvv - duv*duv
-        return numerator / denominator
+        curvature = np.zeros_like(numerator)
+        good = (denominator != 0)
+        curvature[good] = numerator[good] / denominator[good]
+        return curvature
 
     def curvature_along_direction(self, v1, v2):
         &#34;&#34;&#34;
@@ -146,13 +162,14 @@ and calculates any curvature information from them.</p></div>
         c1[np.isnan(c1)] = 0
         c2[np.isnan(c2)] = 0
 
-        c1mask = (c1 &lt; c2)
-        c2mask = np.logical_not(c1mask)
-
-        c1_r = np.where(c1mask, c1, c2)
-        c2_r = np.where(c2mask, c1, c2)
-
-        return c1_r, c2_r
+        if self.order:
+            c1mask = (c1 &lt; c2)
+            c2mask = np.logical_not(c1mask)
+            c1_r = np.where(c1mask, c1, c2)
+            c2_r = np.where(c2mask, c1, c2)
+            return c1_r, c2_r
+        else:
+            return c1, c2
 
     def values_and_directions(self):
         &#34;&#34;&#34;
@@ -288,6 +305,25 @@ and calculates any curvature information from them.</p></div>
             data.mean = self.mean()
         return data</code></pre>
 </details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="sverchok.utils.surface.data.SurfaceCurvatureCalculator.derivatives_data"><code class="name">prop <span class="ident">derivatives_data</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def derivatives_data(self):
+    if self._derivatives_data is None:
+        if self.points is None or self.fu is None or self.fv is None:
+            raise Exception(&#34;SurfaceCurvatureCalculator.set() was not called before call to SurfaceCurvatureCalculator.derivatives_data&#34;)
+        self._derivatives_data = SurfaceDerivativesData(self.points, self.fu, self.fv)
+    return self._derivatives_data</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="sverchok.utils.surface.data.SurfaceCurvatureCalculator.calc"><code class="name flex">
@@ -440,7 +476,18 @@ corresponds to principal_value_2.</p></div>
                 m.translation = Vector(p)
             return matrices
         else:
-            return matrices_np</code></pre>
+            return matrices_np
+
+    def tangents_in_direction(self, uv_directions, w_axis=2):
+        if w_axis == 2:
+            U, V = 0, 1
+        elif w_axis == 1:
+            U, V = 0, 2
+        else:
+            U, V = 1, 2
+        d_u = uv_directions[:,U][np.newaxis].T
+        d_v = uv_directions[:,V][np.newaxis].T
+        return self.du * d_u + self.dv * d_v</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -464,6 +511,12 @@ corresponds to principal_value_2.</p></div>
 </dd>
 <dt id="sverchok.utils.surface.data.SurfaceDerivativesData.tangent_lens"><code class="name flex">
 <span>def <span class="ident">tangent_lens</span></span>(<span>self, keepdims=True)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="sverchok.utils.surface.data.SurfaceDerivativesData.tangents_in_direction"><code class="name flex">
+<span>def <span class="ident">tangents_in_direction</span></span>(<span>self, uv_directions, w_axis=2)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -502,6 +555,7 @@ corresponds to principal_value_2.</p></div>
 <ul class="">
 <li><code><a title="sverchok.utils.surface.data.SurfaceCurvatureCalculator.calc" href="#sverchok.utils.surface.data.SurfaceCurvatureCalculator.calc">calc</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceCurvatureCalculator.curvature_along_direction" href="#sverchok.utils.surface.data.SurfaceCurvatureCalculator.curvature_along_direction">curvature_along_direction</a></code></li>
+<li><code><a title="sverchok.utils.surface.data.SurfaceCurvatureCalculator.derivatives_data" href="#sverchok.utils.surface.data.SurfaceCurvatureCalculator.derivatives_data">derivatives_data</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceCurvatureCalculator.gauss" href="#sverchok.utils.surface.data.SurfaceCurvatureCalculator.gauss">gauss</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceCurvatureCalculator.mean" href="#sverchok.utils.surface.data.SurfaceCurvatureCalculator.mean">mean</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceCurvatureCalculator.set" href="#sverchok.utils.surface.data.SurfaceCurvatureCalculator.set">set</a></code></li>
@@ -514,11 +568,12 @@ corresponds to principal_value_2.</p></div>
 </li>
 <li>
 <h4><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData" href="#sverchok.utils.surface.data.SurfaceDerivativesData">SurfaceDerivativesData</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData.matrices" href="#sverchok.utils.surface.data.SurfaceDerivativesData.matrices">matrices</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData.normals" href="#sverchok.utils.surface.data.SurfaceDerivativesData.normals">normals</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData.normals_len" href="#sverchok.utils.surface.data.SurfaceDerivativesData.normals_len">normals_len</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData.tangent_lens" href="#sverchok.utils.surface.data.SurfaceDerivativesData.tangent_lens">tangent_lens</a></code></li>
+<li><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData.tangents_in_direction" href="#sverchok.utils.surface.data.SurfaceDerivativesData.tangents_in_direction">tangents_in_direction</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData.unit_normals" href="#sverchok.utils.surface.data.SurfaceDerivativesData.unit_normals">unit_normals</a></code></li>
 <li><code><a title="sverchok.utils.surface.data.SurfaceDerivativesData.unit_tangents" href="#sverchok.utils.surface.data.SurfaceDerivativesData.unit_tangents">unit_tangents</a></code></li>
 </ul>
