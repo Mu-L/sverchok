@@ -126,6 +126,7 @@
     - SvExSurfaceBoundaryNode
     - ---
     - SvIntersectNurbsCurvesNode
+    - SvPrepareCurvesNetNode
     - SvExNearestPointOnCurveNode
     - SvExOrthoProjectCurveNode
     - SvExCurveEndpointsNode
@@ -302,7 +303,7 @@
     - icon_name: POINTCLOUD_DATA
     - extra_menu: AdvancedObjectsPartialMenu
     - SvHomogenousVectorField
-    - SvRandomPointsOnMesh
+    - SvPopulateMeshNode
     - SvPopulateSurfaceMk2Node
     - SvPopulateSolidMk2Node
     - SvFieldRandomProbeMk3Node
@@ -392,6 +393,7 @@
     - SvCircleApproxNode
     - SvSphereApproxNode
     - SvInscribedCircleNode
+    - SvSemiInscribedCircleNode
     - SvSteinerEllipseNode
     - ---
     - SvMeshSelectNodeMk2
@@ -501,7 +503,7 @@
     - SvNumberNode
     - SvScalarMathNodeMK4
     - SvGenNumberRange
-    - SvListInputNode
+    - SvListInputNodeMK2
     - SvRndNumGen
     - RandomNode
     - Float2IntNode

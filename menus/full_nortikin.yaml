@@ -372,7 +372,7 @@
     - icon_name: POINTCLOUD_DATA
     - extra_menu: AdvancedObjectsPartialMenu
     - SvHomogenousVectorField
-    - SvRandomPointsOnMesh
+    - SvPopulateMeshNode
     - SvPopulateSurfaceMk2Node
     - SvPopulateSolidMk2Node
     - SvFieldRandomProbeMk3Node
@@ -446,6 +446,7 @@
         - SvCircleApproxNode
         - SvSphereApproxNode
         - SvInscribedCircleNode
+        - SvSemiInscribedCircleNode
         - SvSteinerEllipseNode
         - ---
         - SvMeshSelectNodeMk2
@@ -536,6 +537,7 @@
         - icon_name: OUTLINER_OB_CURVE
         - extra_menu: AdvancedObjectsPartialMenu
         - SvIntersectNurbsCurvesNode
+        - SvPrepareCurvesNetNode
         - SvExCastCurveNode
         - SvProjectCurveSurfaceNode
         - SvOffsetCurveMk2Node
@@ -569,7 +571,7 @@
     - extra_menu: BasicDataPartialMenu
     - List generator:
         - SvGenNumberRange
-        - SvListInputNode
+        - SvListInputNodeMK2
         - SvRndNumGen
         - SvConstantListNode
         - SvNumpyArrayNode

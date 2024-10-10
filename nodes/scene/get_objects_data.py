@@ -415,6 +415,59 @@ class SvGetObjectsDataMK3(Show3DProperties, SverchCustomTreeNode, bpy.types.Node
 
         self.process_node(None)
 
+    def set_objects_selected_scene(self, ops):
+        """
+        Collect selected objects
+        """
+        #self.object_names.clear()
+        if len(self.object_names)>0:
+            for obj in self.object_names:
+                if obj.name in bpy.data.objects:
+                    bobj = bpy.data.objects[obj.name]
+                    if bpy.context.scene in bobj.users_scene:
+                        bobj.select_set(True)
+                    else:
+                        print(f'Object {obj.name} is not on the current scene. You can switch from [{bpy.context.scene.name}] to [{";".join([s.name for s in bobj.users_scene ])}]')
+                else:
+                    print(f'{obj.name} not in the scene')
+        else:
+            print(f"No object in list of 'Get objects Data' '{self.name}'")
+
+    def deselect_objects_from_scene(self, ops):
+        """
+        Collect selected objects
+        """
+        #self.object_names.clear()
+        if len(self.object_names)>0:
+            for obj in self.object_names:
+                if obj.name in bpy.data.objects:
+                    bobj = bpy.data.objects[obj.name]
+                    if bpy.context.scene in bobj.users_scene:
+                        bobj.select_set(False)
+                    else:
+                        print(f'Object {obj.name} is not on the current scene. You can switch from [{bpy.context.scene.name}] to [{";".join([s.name for s in bobj.users_scene ])}]')
+                else:
+                    print(f'{obj.name} not in the scene')
+        else:
+            print(f"No object in list of 'Get objects Data' '{self.name}'")
+
+        # names = [obj.name for obj in bpy.data.objects if (obj.select_get() and len(obj.users_scene) > 0 and len(obj.users_collection) > 0)]
+
+        # if self.sort:
+        #     names.sort()
+
+        # for name in names:
+        #     item = self.object_names.add()
+        #     item.name = name
+        #     item.icon = 'OUTLINER_OB_' + bpy.data.objects[name].type
+
+        # if not self.object_names:
+        #     ops.report({'WARNING'}, "Warning, no selected objects in the scene")
+        #     return
+
+        self.process_node(None)
+
+
     def select_objs(self, ops):
         """select all objects referenced by node"""
         for item in self.object_names:
@@ -450,6 +503,7 @@ class SvGetObjectsDataMK3(Show3DProperties, SverchCustomTreeNode, bpy.types.Node
             self.wrapper_tracked_ui_draw_op(row, callback, text=op_text).fn_name = 'get_objects_from_scene'
 
         col = layout.column(align=True)
+
         row = col.row(align=True)
         row.prop(self, "apply_matrix", text="Apply matrix", toggle=True)
         row.prop(self, "mesh_join", text="merge", toggle=True)
@@ -463,6 +517,11 @@ class SvGetObjectsDataMK3(Show3DProperties, SverchCustomTreeNode, bpy.types.Node
         if not by_input:
             self.draw_obj_names(layout)
 
+        if len(self.object_names)>0:
+            row = layout.row()
+            self.wrapper_tracked_ui_draw_op(row, 'node.ob3_callback_mk2', text=f"Select objects ({len(self.object_names)})").fn_name = 'set_objects_selected_scene'
+            self.wrapper_tracked_ui_draw_op(row, 'node.ob3_callback_mk2', text="Deselect objects").fn_name = 'deselect_objects_from_scene'
+
     def sv_draw_buttons_ext(self, context, layout):
         r = layout.column(align=True)
         row = r.row(align=True)
@@ -472,8 +531,6 @@ class SvGetObjectsDataMK3(Show3DProperties, SverchCustomTreeNode, bpy.types.Node
             for i in range(7):
                 r.prop(self, "out_np", index=i, text=numpy_socket_names[i], toggle=True)
 
-        layout.prop(self, 'draw_3dpanel', text="To Control panel")
-
     def rclick_menu(self, context, layout):
         '''right click sv_menu items'''
         layout.label(text="Output Numpy:")
@@ -481,6 +538,10 @@ class SvGetObjectsDataMK3(Show3DProperties, SverchCustomTreeNode, bpy.types.Node
         if not self.output_np_all:
             for i in range(7):
                 layout.prop(self, "out_np", index=i, text=numpy_socket_names[i], toggle=True)
+
+    def draw_buttons_ext(self, context, layout):
+        layout.prop(self, "draw_3dpanel", icon="PLUGIN")
+        self.sv_draw_buttons_ext(context, layout)
 
     def draw_buttons_3dpanel(self, layout):
         if not self.by_input:

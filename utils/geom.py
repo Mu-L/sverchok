@@ -1040,7 +1040,8 @@ class PlaneEquation(object):
         # (A x + B y + C z) is a scalar product of (x, y, z) and (A, B, C)
         numerators = abs(points.dot([a, b, c]) + d)
         denominator = math.sqrt(a*a + b*b + c*c)
-        return numerators / denominator
+        res = numerators / denominator
+        return res
 
     def intersect_with_line(self, line, min_det=1e-12):
         """
@@ -2800,4 +2801,25 @@ def scale_relative(points, center, scale):
     points = points * scale
 
     return (points + center).tolist()
+
+def is_convex_2d(verts):
+    """
+    Check if 2D polygon is convex.
+
+    Args:
+        verts: np.array or list of shape (n,3); only first and second components are considered.
+
+    Returns:
+        boolean.
+    """
+    verts = np.array(verts)
+    edges = np.roll(verts, -1, axis=0) - verts
+    sign = None
+    for e1, e2 in zip(edges[:-1], edges[1:]):
+        n = np.cross(e1, e2)
+        if sign is None:
+            sign = n[2]
+        elif sign * n[2] < 0:
+            return False
+    return True
 
